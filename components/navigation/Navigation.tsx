@@ -29,7 +29,7 @@ const dummyNotifications: Notification[] = [
     message: 'Customer Feedback Survey received a new response',
     type: 'success',
     timestamp: '2 minutes ago',
-    read: false
+    read: false,
   },
   {
     id: '2',
@@ -37,7 +37,7 @@ const dummyNotifications: Notification[] = [
     message: 'Jane Smith shared Event Registration Form with you',
     type: 'info',
     timestamp: '1 hour ago',
-    read: false
+    read: false,
   },
   {
     id: '3',
@@ -45,7 +45,7 @@ const dummyNotifications: Notification[] = [
     message: 'Job Application Form is approaching response limit',
     type: 'warning',
     timestamp: '3 hours ago',
-    read: true
+    read: true,
   },
   {
     id: '4',
@@ -53,8 +53,8 @@ const dummyNotifications: Notification[] = [
     message: 'Mike left a comment on Product Survey',
     type: 'info',
     timestamp: '5 hours ago',
-    read: true
-  }
+    read: true,
+  },
 ];
 
 export function Navigation() {
@@ -72,14 +72,16 @@ export function Navigation() {
   };
 
   const markAsRead = (notificationId: string) => {
-    setNotifications(notifications.map(notification => 
-      notification.id === notificationId 
-        ? { ...notification, read: true }
-        : notification
-    ));
+    setNotifications(
+      notifications.map((notification) =>
+        notification.id === notificationId
+          ? { ...notification, read: true }
+          : notification
+      )
+    );
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -167,7 +169,9 @@ export function Navigation() {
                       align="end"
                     >
                       <div className="px-4 py-3 border-b border-gray-200">
-                        <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+                        <h3 className="text-sm font-semibold text-gray-900">
+                          Notifications
+                        </h3>
                       </div>
                       <div className="max-h-96 overflow-y-auto">
                         {notifications.map((notification) => (

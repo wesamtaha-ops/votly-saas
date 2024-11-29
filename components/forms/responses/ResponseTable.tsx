@@ -1,11 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Eye, Download, Clock, CheckCircle, AlertTriangle } from 'lucide-react';
+import { 
+  Eye, Download, Clock, CheckCircle, AlertTriangle, 
+  MessageSquare, ChevronDown, ChevronUp, Filter,
+  ArrowUpRight, ArrowDownRight 
+} from 'lucide-react';
 import type { ResponseDetails } from '@/types';
 
 interface ResponseTableProps {
   responses: ResponseDetails[];
-  onViewDetails: (response: ResponseDetails) => void;
+  onViewDetails: (response: ResponseDetails, activeTab?: string) => void;
 }
 
 const StatusBadge = ({ status }: { status: string }) => {
@@ -57,29 +61,48 @@ export function ResponseTable({ responses, onViewDetails }: ResponseTableProps) 
       className="bg-white rounded-lg shadow-sm border border-gray-200"
     >
       <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-lg font-medium text-gray-900">Individual Responses</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-medium text-gray-900">Individual Responses</h3>
+          <div className="flex items-center space-x-2">
+            <button className="text-sm text-gray-600 hover:text-gray-900 flex items-center">
+              <Filter className="h-4 w-4 mr-1" />
+              Filter
+            </button>
+            <button className="text-sm text-gray-600 hover:text-gray-900 flex items-center">
+              <Download className="h-4 w-4 mr-1" />
+              Export
+            </button>
+          </div>
+        </div>
       </div>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
-          <thead>
+          <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Submission Info
+                <ChevronDown className="h-4 w-4 inline-block ml-1" />
               </th>
-              <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Platform
+                <ChevronDown className="h-4 w-4 inline-block ml-1" />
               </th>
-              <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
+                <ChevronDown className="h-4 w-4 inline-block ml-1" />
               </th>
-              <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Comments
+                <ChevronDown className="h-4 w-4 inline-block ml-1" />
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {responses.map((response) => (
-              <tr key={response.id} className="hover:bg-gray-50">
+              <tr key={response.id} className="hover:bg-gray-50 transition-colors duration-150">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
                     {new Date(response.submissionStarted).toLocaleDateString()}
@@ -102,10 +125,21 @@ export function ResponseTable({ responses, onViewDetails }: ResponseTableProps) 
                     {response.metadata.completionRate}% Complete
                   </div>
                 </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <button 
+                    onClick={() => onViewDetails(response, 'comments')}
+                    className="inline-flex items-center text-sm text-indigo-600 hover:text-indigo-900 group"
+                  >
+                    <MessageSquare className="h-4 w-4 mr-1.5 group-hover:text-indigo-900" />
+                    <span className="group-hover:underline">
+                      {response.comments?.length || 0} Comments
+                    </span>
+                  </button>
+                </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <div className="flex items-center space-x-4">
                     <button
-                      onClick={() => onViewDetails(response)}
+                      onClick={() => onViewDetails(response, 'details')}
                       className="text-indigo-600 hover:text-indigo-900 flex items-center"
                     >
                       <Eye className="h-4 w-4 mr-1" />

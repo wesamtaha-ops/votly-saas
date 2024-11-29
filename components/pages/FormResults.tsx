@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 
 import { StatsCards } from './FormResults/StatsCards';
-import { ResponseTable } from './FormResults/ResponseTable';
+import { ResponseTable } from '@/components/forms/responses/table/ResponseTable';
 import { AIAnalysis } from './FormResults/AIAnalysis';
 import { AdvancedFilters } from './FormResults/AdvancedFilters';
 import { MetricsGrid } from './FormResults/MetricsGrid';
