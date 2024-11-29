@@ -1,101 +1,101 @@
 import React from 'react';
-import { Eye, MessageSquare } from 'lucide-react';
-import { ResponseDetails } from '@/types';
-import { Comment } from './types';
-import { StatusBadge } from './StatusBadge';
+import { Eye, CheckCircle, AlertTriangle, Clock } from 'lucide-react';
+import type { ResponseColumn, ResponseData } from './types';
 import { format } from 'date-fns';
 
 interface ResponseTableRowProps {
-  response: ResponseDetails;
+  columns: ResponseColumn[];
+  data: ResponseData;
+  onView: () => void;
   isSelected: boolean;
-  onSelect: () => void;
-  onViewDetails: () => void;
-  selectedCell: { rowId: string; columnId: string } | null;
-  onCellSelect: (columnId: string) => void;
-  comments: Comment[];
+  onToggleSelect: () => void;
 }
 
-export function ResponseTableRow({
-  response,
-  isSelected,
-  onSelect,
-  onViewDetails,
-  selectedCell,
-  onCellSelect,
-  comments
-}: ResponseTableRowProps) {
-  const isRowSelected = selectedCell?.rowId === response.id;
-  
+const StatusBadge = ({ status }: { status: string }) => {
+  const getStatusStyles = () => {
+    switch (status) {
+      case 'complete':
+        return {
+          bg: 'bg-green-100',
+          text: 'text-green-800',
+          icon: <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
+        };
+      case 'partial':
+        return {
+          bg: 'bg-yellow-100',
+          text: 'text-yellow-800',
+          icon: <Clock className="h-4 w-4 text-yellow-500 mr-1" />
+        };
+      case 'invalid':
+        return {
+          bg: 'bg-red-100',
+          text: 'text-red-800',
+          icon: <AlertTriangle className="h-4 w-4 text-red-500 mr-1" />
+        };
+      default:
+        return {
+          bg: 'bg-gray-100',
+          text: 'text-gray-800',
+          icon: null
+        };
+    }
+  };
+
+  const styles = getStatusStyles();
+
   return (
-    <tr className={`excel-table-row ${isSelected ? 'selected' : ''}`}>
-    
-      
-      <td 
-        className={`excel-cell ${isRowSelected && selectedCell?.columnId === 'status' ? 'selected' : ''}`}
-        onClick={() => onCellSelect('status')}
-      >
-        <StatusBadge status={response.status} />
-      </td>
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${styles.bg} ${styles.text}`}>
+      {styles.icon}
+      {status.charAt(0).toUpperCase() + status.slice(1)}
+    </span>
+  );
+};
 
-      <td 
-        className={`excel-cell ${isRowSelected && selectedCell?.columnId === 'submittedAt' ? 'selected' : ''}`}
-        onClick={() => onCellSelect('submittedAt')}
-      >
-        {format(new Date(response.submissionStarted), 'PPp')}
-      </td>
+export function ResponseTableRow({
+  columns,
+  data,
+  onView,
+  isSelected,
+  onToggleSelect
+}: ResponseTableRowProps) {
+  const getCellContent = (column: ResponseColumn) => {
+    if (column.type === 'status') {
+      return <StatusBadge status={data.status} />;
+    }
 
-      <td 
-        className={`excel-cell ${isRowSelected && selectedCell?.columnId === 'completionRate' ? 'selected' : ''}`}
-        onClick={() => onCellSelect('completionRate')}
-      >
-        <div className="flex items-center space-x-2">
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-indigo-600 h-2 rounded-full" 
-              style={{ width: `${response.metadata.completionRate}%` }}
-            />
-          </div>
-          <span className="text-sm text-gray-600">
-            {response.metadata.completionRate}%
-          </span>
-        </div>
-      </td>
+    if (column.type === 'date') {
+      return format(new Date(data.lastUpdated), 'MMM d, yyyy HH:mm');
+    }
 
-      <td 
-        className={`excel-cell ${isRowSelected && selectedCell?.columnId === 'platform' ? 'selected' : ''}`}
-        onClick={() => onCellSelect('platform')}
-      >
-        <div className="flex items-center space-x-2">
-          <span>{response.browser}</span>
-          <span className="text-gray-400">|</span>
-          <span>{response.os}</span>
-        </div>
-      </td>
+    if (column.key.startsWith('answers.')) {
+      const key = column.key.split('.')[1];
+      return data.answers[key] || '-';
+    }
 
-      <td 
-        className={`excel-cell ${isRowSelected && selectedCell?.columnId === 'comments' ? 'selected' : ''}`}
-        onClick={() => onCellSelect('comments')}
-      >
-        <div className="flex items-center space-x-2">
-          <MessageSquare className="h-4 w-4 text-gray-400" />
-          <span>{comments.length}</span>
-        </div>
-      </td>
+    return data[column.key as keyof ResponseData] || '-';
+  };
 
-      <td className="excel-cell">
-
-        <button
-          onClick={onViewDetails}
-          className="excel-action-button"
+  return (
+    <tr className="hover:bg-gray-50">
+      {columns.map((column) => (
+        <td 
+          key={column.id}
+          className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+          style={{ width: column.width ? `${column.width}px` : undefined }}
         >
-         
-       
-        <div className="flex items-center space-x-2">
-          <Eye className="h-4 w-4" />
-          <span>View</span>
+          {getCellContent(column)}
+        </td>
+      ))}
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={onView}
+            className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-100 transition-colors duration-200"
+          >
+            <Eye className="h-4 w-4 mr-2" />
+            View
+          </button>
         </div>
-        
-        </button>
       </td>
     </tr>
   );

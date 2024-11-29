@@ -73,3 +73,46 @@ export interface ResponseDetails {
     completionRate: number;
   };
 }
+
+// types/index.ts
+export interface ResponseDetails {
+  id: string;
+  submissionStarted: string;
+  lastUpdated: string;
+  submissionType: 'web' | 'mobile' | 'api';
+  status: 'complete' | 'partial' | 'invalid';
+  currentPage: string;
+  browser: string;
+  os: string;
+  network: string;
+  networkId: string;
+  ipAddress: string;
+  answers: Record<string, any>;
+  metadata: {
+    timeSpent: string;
+    pagesVisited: number;
+    completionRate: number;
+  };
+  comments?: Array<{
+    id: string;
+    user: {
+      id: string;
+      name: string;
+      avatar: string;
+    };
+    content: string;
+    timestamp: Date;
+    mentions: string[];
+    replies?: Array<{
+      id: string;
+      user: {
+        id: string;
+        name: string;
+        avatar: string;
+      };
+      content: string;
+      timestamp: Date;
+      mentions: string[];
+    }>;
+  }>;
+}

@@ -1,33 +1,45 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { Calendar } from 'lucide-react';
 import { ResponseTableHeader } from './ResponseTableHeader';
 import { ResponseTableRow } from './ResponseTableRow';
-import { ResponseTableComments } from './ResponseTableComments';
-import { ResponseTableFilters } from './ResponseTableFilters';
 import { ResponseTablePagination } from './ResponseTablePagination';
 import { useResponseTableState } from './hooks/useResponseTableState';
 import { useResponseTableSelection } from './hooks/useResponseTableSelection';
-import { useResponseTableComments } from './hooks/useResponseTableComments';
-import { Settings, Download, Filter } from 'lucide-react';
-import { ResponseDetails } from '@/types';
-import './styles/ResponseTable.css';
+import type { ResponseColumn, ResponseData } from './types';
+import { mockResponses } from './mockData';
 
 interface ResponseTableProps {
-  responses: ResponseDetails[];
-  onViewDetails: (response: ResponseDetails) => void;
+  responses?: ResponseData[];
+  questions?: Array<{ id: string; title: string }>;
+  onViewDetails: (response: ResponseData) => void;
 }
 
-export function ResponseTable({ responses, onViewDetails }: ResponseTableProps) {
-  const tableRef = useRef<HTMLDivElement>(null);
-  const [selectedCell, setSelectedCell] = useState<{rowId: string; columnId: string} | null>(null);
-  const [resizingColumn, setResizingColumn] = useState<string | null>(null);
-  const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
-  
-  const {
-    sortedResponses,
-    sortConfig,
-    handleSort,
-    filters,
+export function ResponseTable({ 
+  responses = mockResponses, 
+  questions = [], 
+  onViewDetails 
+}: ResponseTableProps) {
+  const generateColumns = React.useCallback((): ResponseColumn[] => {
+    const baseColumns: ResponseColumn[] = [
+      { id: 'lastUpdated', key: 'lastUpdated', label: 'Last updated', sortable: true, width: 180, type: 'date' },
+      { id: 'status', key: 'status', label: 'Status', sortable: true, width: 120, type: 'status' },
+      { id: 'fullName', key: 'answers.fullName', label: 'What is your full name?', sortable: true, width: 200 },
+      { id: 'email', key: 'answers.email', label: 'What is your email address?', sortable: true, width: 200, type: 'email' },
+      { id: 'phone', key: 'answers.phone', label: 'What is your phone number?', sortable: true, width: 180 },
+      { id: 'address', key: 'answers.address', label: 'Address', sortable: true, width: 250 },
+      { id: 'city', key: 'answers.city', label: 'City', sortable: true, width: 150 },
+      { id: 'state', key: 'answers.state', label: 'State/Province', sortable: true, width: 200 }
+    ];
+
+    return [...baseColumns];
+  }, [questions]);
+
+  const [columns, setColumns] = useState<ResponseColumn[]>(() => generateColumns());
+  const { 
+    sortedResponses, 
+    sortConfig, 
+    handleSort, 
+    filters, 
     setFilters,
     page,
     setPage,
@@ -42,85 +54,51 @@ export function ResponseTable({ responses, onViewDetails }: ResponseTableProps) 
     isAllSelected
   } = useResponseTableSelection(responses);
 
-  const {
-    comments,
-    addComment,
-    editComment,
-    deleteComment,
-    activeCommentThread,
-    setActiveCommentThread
-  } = useResponseTableComments();
-
-  // Handle column resizing
-  useEffect(() => {
-    if (!resizingColumn) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!tableRef.current) return;
-      
-      const tableRect = tableRef.current.getBoundingClientRect();
-      const newWidth = Math.max(100, e.clientX - tableRect.left);
-      
-      setColumnWidths(prev => ({
-        ...prev,
-        [resizingColumn]: newWidth
-      }));
-    };
-
-    const handleMouseUp = () => {
-      setResizingColumn(null);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [resizingColumn]);
+  const handleColumnResize = (columnId: string, width: number) => {
+    setColumns(prev => 
+      prev.map(col => 
+        col.id === columnId ? { ...col, width } : col
+      )
+    );
+  };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="excel-table-container"
-      ref={tableRef}
-    >
-      {/* Excel-like Toolbar */}
-     
+    <div className="bg-white shadow-sm rounded-lg border border-gray-200">
+      <div className="p-4 border-b border-gray-200">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex items-center space-x-2">
+            <Calendar className="h-5 w-5 text-gray-400" />
+            <select
+              className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            >
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+              <option value="90d">Last 90 days</option>
+              <option value="custom">Custom range</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
-      <ResponseTableFilters 
-        filters={filters}
-        onFilterChange={setFilters}
-      />
-
-      <div className="excel-table-wrapper">
-        <table className="excel-table">
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
           <ResponseTableHeader
+            columns={columns}
             sortConfig={sortConfig}
             onSort={handleSort}
-            onSelectAll={selectAllRows}
+            onColumnResize={handleColumnResize}
             isAllSelected={isAllSelected}
-            columnWidths={columnWidths}
-            onResizeStart={setResizingColumn}
+            onSelectAll={selectAllRows}
           />
-          
-          <tbody>
+          <tbody className="bg-white divide-y divide-gray-200">
             {sortedResponses.map((response) => (
               <ResponseTableRow
                 key={response.id}
-                response={response}
+                columns={columns}
+                data={response}
+                onView={() => onViewDetails(response)}
                 isSelected={selectedRows.includes(response.id)}
-                onSelect={() => toggleRowSelection(response.id)}
-                onViewDetails={() => onViewDetails(response)}
-                selectedCell={selectedCell}
-                onCellSelect={(columnId) => setSelectedCell({
-                  rowId: response.id,
-                  columnId
-                })}
-                comments={comments[response.id] || []}
-                columnWidths={columnWidths}
+                onToggleSelect={() => toggleRowSelection(response.id)}
               />
             ))}
           </tbody>
@@ -130,36 +108,10 @@ export function ResponseTable({ responses, onViewDetails }: ResponseTableProps) 
       <ResponseTablePagination
         page={page}
         pageSize={pageSize}
-        total={responses.length}
+        total={sortedResponses.length}
         onPageChange={setPage}
         onPageSizeChange={setPageSize}
       />
-
-      {/* Excel-like Status Bar */}
-      <div className="excel-status-bar">
-        <div>
-          {selectedRows.length} of {responses.length} selected
-        </div>
-        <div>
-          Average completion rate: {
-            Math.round(
-              responses.reduce((acc, r) => acc + r.metadata.completionRate, 0) / responses.length
-            )}%
-        </div>
-        <div>
-          Last updated: {new Date().toLocaleTimeString()}
-        </div>
-      </div>
-
-      {activeCommentThread && (
-        <ResponseTableComments
-          comments={activeCommentThread.comments}
-          onAddComment={addComment}
-          onEditComment={editComment}
-          onDeleteComment={deleteComment}
-          onClose={() => setActiveCommentThread(null)}
-        />
-      )}
-    </motion.div>
+    </div>
   );
 }
