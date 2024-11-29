@@ -26,14 +26,7 @@ export function ResponseTableHeader({
   return (
     <thead className="excel-table-header">
       <tr>
-        <th className="excel-checkbox-cell">
-          <input
-            type="checkbox"
-            checked={isAllSelected}
-            onChange={onSelectAll}
-            className="excel-checkbox"
-          />
-        </th>
+      
         {columns.map((column) => (
           <th
             key={column.id}

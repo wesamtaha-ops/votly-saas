@@ -5,11 +5,11 @@ import { ResponseTableRow } from './ResponseTableRow';
 import { ResponseTableComments } from './ResponseTableComments';
 import { ResponseTableFilters } from './ResponseTableFilters';
 import { ResponseTablePagination } from './ResponseTablePagination';
-import { ResponseDetails } from '@/types';
 import { useResponseTableState } from './hooks/useResponseTableState';
 import { useResponseTableSelection } from './hooks/useResponseTableSelection';
 import { useResponseTableComments } from './hooks/useResponseTableComments';
 import { Settings, Download, Filter } from 'lucide-react';
+import { ResponseDetails } from '@/types';
 import './styles/ResponseTable.css';
 
 interface ResponseTableProps {
@@ -88,21 +88,7 @@ export function ResponseTable({ responses, onViewDetails }: ResponseTableProps) 
       ref={tableRef}
     >
       {/* Excel-like Toolbar */}
-      <div className="excel-toolbar">
-        <button className="excel-toolbar-button">
-          <Filter className="h-4 w-4" />
-        </button>
-        <button className="excel-toolbar-button">
-          <Download className="h-4 w-4" />
-        </button>
-        <button className="excel-toolbar-button">
-          <Settings className="h-4 w-4" />
-        </button>
-        <div className="h-4 w-px bg-gray-300 mx-2" />
-        <span className="text-xs text-gray-600">
-          {selectedRows.length} selected
-        </span>
-      </div>
+     
 
       <ResponseTableFilters 
         filters={filters}

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { HelpCircle, AlertTriangle, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { Switch } from '@radix-ui/react-switch';
+import { CheckCircle } from 'lucide-react';
 import type { Response } from './types';
 
 interface QuestionAnalyticsProps {
@@ -10,232 +11,274 @@ interface QuestionAnalyticsProps {
 
 interface QuestionData {
   question: string;
-  responseRate: number;
-  avgScore: number | null;
-  skippedCount: number;
-  status: 'good' | 'warning';
+  totalResponses: number;
+  answeredCount: number;
+  averageScore?: number;
+  maxScore?: number;
+  skipped: number;
   responses: {
-    label: string;
-    value: number;
-    color: string;
+    option: string;
+    count: number;
+    percentage: number;
   }[];
 }
 
 const COLORS = ['#4F46E5', '#7C3AED', '#EC4899', '#10B981', '#F59E0B'];
 
 export function QuestionAnalytics({ responses }: QuestionAnalyticsProps) {
-  const [expandedQuestion, setExpandedQuestion] = React.useState<string | null>(null);
+  const [showPieChart, setShowPieChart] = useState<Record<string, boolean>>({});
 
-  const calculateQuestionMetrics = (): QuestionData[] => {
-    // Mock data - in a real app this would be calculated from actual responses
-    return [
-      {
-        question: 'How satisfied are you with our product?',
-        responseRate: 98,
-        avgScore: 4.5,
-        skippedCount: 2,
-        status: 'good',
-        responses: [
-          { label: 'Very Satisfied', value: 45, color: COLORS[0] },
-          { label: 'Satisfied', value: 30, color: COLORS[1] },
-          { label: 'Neutral', value: 15, color: COLORS[2] },
-          { label: 'Dissatisfied', value: 7, color: COLORS[3] },
-          { label: 'Very Dissatisfied', value: 3, color: COLORS[4] }
-        ]
-      },
-      {
-        question: 'Would you recommend us to others?',
-        responseRate: 95,
-        avgScore: 4.2,
-        skippedCount: 5,
-        status: 'good',
-        responses: [
-          { label: 'Definitely', value: 50, color: COLORS[0] },
-          { label: 'Probably', value: 25, color: COLORS[1] },
-          { label: 'Maybe', value: 15, color: COLORS[2] },
-          { label: 'Probably Not', value: 7, color: COLORS[3] },
-          { label: 'Definitely Not', value: 3, color: COLORS[4] }
-        ]
-      },
-      {
-        question: 'What features would you like to see improved?',
-        responseRate: 75,
-        avgScore: null,
-        skippedCount: 25,
-        status: 'warning',
-        responses: [
-          { label: 'UI/UX', value: 35, color: COLORS[0] },
-          { label: 'Performance', value: 25, color: COLORS[1] },
-          { label: 'Features', value: 20, color: COLORS[2] },
-          { label: 'Integration', value: 15, color: COLORS[3] },
-          { label: 'Other', value: 5, color: COLORS[4] }
-        ]
-      }
-    ];
-  };
+  const questions: QuestionData[] = [
+    {
+      question: "How satisfied are you with our product?",
+      totalResponses: 100,
+      answeredCount: 98,
+      averageScore: 4.5,
+      maxScore: 5,
+      skipped: 2,
+      responses: [
+        { option: "Very Satisfied", count: 60, percentage: 61.2 },
+        { option: "Satisfied", count: 28, percentage: 28.6 },
+        { option: "Neutral", count: 7, percentage: 7.1 },
+        { option: "Dissatisfied", count: 2, percentage: 2 },
+        { option: "Very Dissatisfied", count: 1, percentage: 1.1 }
+      ]
+    },
+ {
+    question: "How likely are you to recommend our product to others?",
+    totalResponses: 90,
+    answeredCount: 85,
+    averageScore: 8.2,
+    maxScore: 10,
+    skipped: 5,
+    responses: [
+      { option: "Very Likely", count: 50, percentage: 58.8 },
+      { option: "Somewhat Likely", count: 20, percentage: 23.5 },
+      { option: "Neutral", count: 10, percentage: 11.8 },
+      { option: "Unlikely", count: 3, percentage: 3.5 },
+      { option: "Very Unlikely", count: 2, percentage: 2.4 },
+    ],
+  },
+  {
+    question: "How would you rate the quality of our product?",
+    totalResponses: 110,
+    answeredCount: 105,
+    averageScore: 4.3,
+    maxScore: 5,
+    skipped: 5,
+    responses: [
+      { option: "Excellent", count: 60, percentage: 57.1 },
+      { option: "Good", count: 30, percentage: 28.6 },
+      { option: "Average", count: 10, percentage: 9.5 },
+      { option: "Poor", count: 3, percentage: 2.9 },
+      { option: "Very Poor", count: 2, percentage: 1.9 },
+    ],
+  },
+  {
+    question: "How satisfied are you with the delivery experience?",
+    totalResponses: 120,
+    answeredCount: 115,
+    averageScore: 4.0,
+    maxScore: 5,
+    skipped: 5,
+    responses: [
+      { option: "Very Satisfied", count: 50, percentage: 43.5 },
+      { option: "Satisfied", count: 40, percentage: 34.8 },
+      { option: "Neutral", count: 15, percentage: 13 },
+      { option: "Dissatisfied", count: 7, percentage: 6.1 },
+      { option: "Very Dissatisfied", count: 3, percentage: 2.6 },
+    ],
+  },
+  {
+    question: "How would you rate our customer service?",
+    totalResponses: 95,
+    answeredCount: 90,
+    averageScore: 4.7,
+    maxScore: 5,
+    skipped: 5,
+    responses: [
+      { option: "Excellent", count: 55, percentage: 61.1 },
+      { option: "Good", count: 25, percentage: 27.8 },
+      { option: "Average", count: 7, percentage: 7.8 },
+      { option: "Poor", count: 2, percentage: 2.2 },
+      { option: "Very Poor", count: 1, percentage: 1.1 },
+    ],
+  },
+  {
+    question: "How easy was it to use our website or app?",
+    totalResponses: 80,
+    answeredCount: 75,
+    averageScore: 4.8,
+    maxScore: 5,
+    skipped: 5,
+    responses: [
+      { option: "Very Easy", count: 50, percentage: 66.7 },
+      { option: "Somewhat Easy", count: 20, percentage: 26.7 },
+      { option: "Neutral", count: 3, percentage: 4 },
+      { option: "Difficult", count: 1, percentage: 1.3 },
+      { option: "Very Difficult", count: 1, percentage: 1.3 },
+    ],
+  },
+  {
+    question: "How satisfied are you with our pricing?",
+    totalResponses: 100,
+    answeredCount: 95,
+    averageScore: 4.1,
+    maxScore: 5,
+    skipped: 5,
+    responses: [
+      { option: "Very Satisfied", count: 40, percentage: 42.1 },
+      { option: "Satisfied", count: 35, percentage: 36.8 },
+      { option: "Neutral", count: 10, percentage: 10.5 },
+      { option: "Dissatisfied", count: 7, percentage: 7.4 },
+      { option: "Very Dissatisfied", count: 3, percentage: 3.2 },
+    ],
+  },
+  {
+    question: "How helpful was the information provided on our website or app?",
+    totalResponses: 85,
+    answeredCount: 80,
+    averageScore: 4.6,
+    maxScore: 5,
+    skipped: 5,
+    responses: [
+      { option: "Very Helpful", count: 45, percentage: 56.3 },
+      { option: "Helpful", count: 25, percentage: 31.3 },
+      { option: "Neutral", count: 7, percentage: 8.8 },
+      { option: "Not Helpful", count: 2, percentage: 2.5 },
+      { option: "Very Unhelpful", count: 1, percentage: 1.3 },
+    ],
+  },  ];
 
-  const questions = calculateQuestionMetrics();
-
-  const toggleQuestion = (question: string) => {
-    if (expandedQuestion === question) {
-      setExpandedQuestion(null);
-    } else {
-      setExpandedQuestion(question);
-    }
+  const toggleChartType = (questionId: string) => {
+    setShowPieChart(prev => ({
+      ...prev,
+      [questionId]: !prev[questionId]
+    }));
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center mb-6">
-        <HelpCircle className="h-5 w-5 text-indigo-600 mr-2" />
-        <h3 className="text-lg font-medium text-gray-900">Question Analytics</h3>
-      </div>
-
-      <div className="space-y-6">
-        {questions.map((question, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="border border-gray-200 rounded-lg overflow-hidden"
-          >
-            <div 
-              className="p-4 bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-200"
-              onClick={() => toggleQuestion(question.question)}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center">
-                    {question.status === 'warning' ? (
-                      <AlertTriangle className="h-5 w-5 text-yellow-500 mr-2" />
-                    ) : (
-                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                    )}
-                    <h4 className="text-sm font-medium text-gray-900">
-                      {question.question}
-                    </h4>
-                  </div>
-                  <div className="mt-2 grid grid-cols-3 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-500">Response Rate</p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        {question.responseRate}%
-                      </p>
-                    </div>
-                    {question.avgScore && (
-                      <div>
-                        <p className="text-sm text-gray-500">Average Score</p>
-                        <p className="text-lg font-semibold text-gray-900">
-                          {question.avgScore}/5
-                        </p>
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-sm text-gray-500">Skipped</p>
-                      <p className="text-lg font-semibold text-gray-900">
-                        {question.skippedCount}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                {expandedQuestion === question.question ? (
-                  <ChevronUp className="h-5 w-5 text-gray-400" />
-                ) : (
-                  <ChevronDown className="h-5 w-5 text-gray-400" />
-                )}
-              </div>
+    <div className="space-y-8">
+      {questions.map((question, index) => (
+        <div 
+          key={index}
+          className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
+        >
+          {/* Question Header */}
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="flex-shrink-0">
+              <CheckCircle className="h-6 w-6 text-green-500" />
             </div>
+            <h3 className="text-xl font-semibold text-gray-900">
+              {question.question}
+            </h3>
+          </div>
 
-            {expandedQuestion === question.question && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className="border-t border-gray-200 bg-gray-50 p-4"
+          {/* Metrics Grid */}
+          <div className="grid grid-cols-3 gap-8 mb-1">
+            <div>
+              <h4 className="text-sm font-medium text-gray-500">Response Rate</h4>
+              <p className="mt-2 text-xl  text-gray-900">
+                {((question.answeredCount / question.totalResponses) * 100).toFixed(0)}%
+              </p>
+            </div>
+            {question.averageScore && (
+              <div>
+                <h4 className="text-sm font-medium text-gray-500">Average Score</h4>
+                <p className="mt-2 text-xl  text-gray-900">
+                  {question.averageScore}/{question.maxScore}
+                </p>
+              </div>
+            )}
+            <div>
+              <h4 className="text-sm font-medium text-gray-500">Skipped</h4>
+              <p className="mt-2 text-xl  text-gray-900">
+                {question.skipped}
+              </p>
+            </div>
+          </div>
+
+          {/* Chart Toggle */}
+          <div className="flex justify-end mb-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-500">Pie chart</span>
+              <Switch
+                checked={showPieChart[index] || false}
+                onCheckedChange={() => toggleChartType(index.toString())}
+                className="w-11 h-6 bg-gray-200 rounded-full relative inline-flex items-center"
               >
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Bar Chart */}
-                  <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <h5 className="text-sm font-medium text-gray-900 mb-4">Response Distribution</h5>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={question.responses}>
-                          <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="label" />
-                          <YAxis />
-                          <Tooltip />
-                          <Legend />
-                          <Bar dataKey="value" name="Responses">
-                            {question.responses.map((entry, index) => (
-                              <Cell key={index} fill={entry.color} />
-                            ))}
-                          </Bar>
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
+                <span 
+                  className={`${
+                    showPieChart[index] ? 'translate-x-6' : 'translate-x-1'
+                  } inline-block w-4 h-4 transform bg-white rounded-full transition-transform`}
+                />
+              </Switch>
+            </div>
+          </div>
 
-                  {/* Pie Chart */}
-                  <div className="bg-white p-4 rounded-lg shadow-sm">
-                    <h5 className="text-sm font-medium text-gray-900 mb-4">Response Distribution (%)</h5>
-                    <div className="h-64">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={question.responses}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            dataKey="value"
-                          >
-                            {question.responses.map((entry, index) => (
-                              <Cell key={index} fill={entry.color} />
-                            ))}
-                          </Pie>
-                          <Tooltip />
-                          <Legend />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    </div>
+          {/* Response Visualization */}
+          {question.answeredCount === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              No responses yet
+            </div>
+          )} 
+            
+             {!showPieChart[index]  && (
+            <div className="space-y-4">
+              {question.responses.map((response, idx) => (
+                <div key={idx} className="flex items-center space-x-4">
+                  <div className="w-32 flex-shrink-0">
+                    <span className="text-sm text-gray-600">{response.option}</span>
                   </div>
-
-                  {/* Additional Metrics */}
-                  <div className="lg:col-span-2">
-                    <div className="bg-white p-4 rounded-lg shadow-sm">
-                      <h5 className="text-sm font-medium text-gray-900 mb-4">Response Trends</h5>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-indigo-50 p-4 rounded-lg">
-                          <p className="text-sm font-medium text-indigo-900">Most Common Response</p>
-                          <p className="mt-1 text-lg font-semibold text-indigo-600">
-                            {question.responses[0].label}
-                          </p>
-                        </div>
-                        <div className="bg-green-50 p-4 rounded-lg">
-                          <p className="text-sm font-medium text-green-900">Response Quality</p>
-                          <p className="mt-1 text-lg font-semibold text-green-600">
-                            {question.status === 'good' ? 'High' : 'Medium'}
-                          </p>
-                        </div>
-                        <div className="bg-purple-50 p-4 rounded-lg">
-                          <p className="text-sm font-medium text-purple-900">Completion Time</p>
-                          <p className="mt-1 text-lg font-semibold text-purple-600">
-                            45s avg.
-                          </p>
-                        </div>
+                  <div className="flex-1 flex items-center space-x-4">
+                    <div className="flex-1 h-8 bg-gray-100 rounded-md overflow-hidden">
+                      <div 
+                        className="h-full bg-indigo-600 flex items-center"
+                        style={{ width: `${response.percentage}%` }}
+                      >
+                        <span className="px-2 text-sm text-white">
+                          {response.count} responses
+                        </span>
                       </div>
+                    </div>
+                    <div className="w-16 text-right">
+                      <span className="text-sm text-gray-600">
+                        {response.percentage}%
+                      </span>
                     </div>
                   </div>
                 </div>
-              </motion.div>
-            )}
-          </motion.div>
-        ))}
-      </div>
+              ))}
+            </div>
+          )}
+
+          {/* Chart View */}
+          {showPieChart[index] && question.answeredCount > 0 && (
+            <div className="mt-6 h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={question.responses}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="count"
+                  >
+                    {question.responses.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
