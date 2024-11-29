@@ -49,7 +49,7 @@ function App() {
             <Route path='/legal/privacy' element={<Privacy />} />
             <Route path='/legal/cookies' element={<Cookies />} />
             <Route
-              path='/products/form-builder'
+              path='products/form-builder'
               element={<FormBuilderProduct />}
             />
           </Routes>
