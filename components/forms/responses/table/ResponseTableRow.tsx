@@ -28,14 +28,7 @@ export function ResponseTableRow({
   
   return (
     <tr className={`excel-table-row ${isSelected ? 'selected' : ''}`}>
-      <td className="excel-checkbox-cell">
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={onSelect}
-          className="excel-checkbox"
-        />
-      </td>
+    
       
       <td 
         className={`excel-cell ${isRowSelected && selectedCell?.columnId === 'status' ? 'selected' : ''}`}

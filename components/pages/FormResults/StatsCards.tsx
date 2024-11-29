@@ -3,17 +3,12 @@ import { motion } from 'framer-motion';
 import { BarChart2, Clock, TrendingUp, Users } from 'lucide-react';
 import type { Response } from './types';
 
-interface Metric {
-  value: string;
-  change: string;
-  icon: React.ElementType;
-}
-
 interface StatsCardsProps {
   responses: Response[];
 }
 
 export function StatsCards({ responses }: StatsCardsProps) {
+  // Calculate metrics based on responses
   const calculateMetrics = () => {
     // Default metrics in case of no responses
     const defaultMetrics = {

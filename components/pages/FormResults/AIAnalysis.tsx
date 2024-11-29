@@ -1,7 +1,7 @@
 import React from 'react';
 import { Brain } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import type { Response } from './types';
 
 interface AIAnalysisProps {
@@ -33,7 +33,7 @@ export function AIAnalysis({ responses, showAIAnalysis, setShowAIAnalysis }: AIA
     };
   };
 
-  // Calculate language distribution
+  // Mock language distribution data
   const languageData = [
     { language: 'English', count: 75 },
     { language: 'Spanish', count: 15 },
