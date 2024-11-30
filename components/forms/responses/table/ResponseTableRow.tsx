@@ -18,25 +18,25 @@ const StatusBadge = ({ status }: { status: string }) => {
         return {
           bg: 'bg-green-100',
           text: 'text-green-800',
-          icon: <CheckCircle className="h-4 w-4 text-green-500 mr-1" />
+          icon: <CheckCircle className='h-4 w-4 text-green-500 mr-1' />,
         };
       case 'partial':
         return {
           bg: 'bg-yellow-100',
           text: 'text-yellow-800',
-          icon: <Clock className="h-4 w-4 text-yellow-500 mr-1" />
+          icon: <Clock className='h-4 w-4 text-yellow-500 mr-1' />,
         };
       case 'invalid':
         return {
           bg: 'bg-red-100',
           text: 'text-red-800',
-          icon: <AlertTriangle className="h-4 w-4 text-red-500 mr-1" />
+          icon: <AlertTriangle className='h-4 w-4 text-red-500 mr-1' />,
         };
       default:
         return {
           bg: 'bg-gray-100',
           text: 'text-gray-800',
-          icon: null
+          icon: null,
         };
     }
   };
@@ -44,7 +44,8 @@ const StatusBadge = ({ status }: { status: string }) => {
   const styles = getStatusStyles();
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${styles.bg} ${styles.text}`}>
+    <span
+      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${styles.bg} ${styles.text}`}>
       {styles.icon}
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
@@ -56,47 +57,45 @@ export function ResponseTableRow({
   data,
   onView,
   isSelected,
-  onToggleSelect
+  onToggleSelect,
 }: ResponseTableRowProps) {
+
+  
   const getCellContent = (column: ResponseColumn) => {
+    console.log('Column:', column.key, 'Data:', data);
     if (column.type === 'status') {
       return <StatusBadge status={data.status} />;
     }
-
     if (column.type === 'date') {
       return format(new Date(data.lastUpdated), 'MMM d, yyyy HH:mm');
     }
-
     if (column.key.startsWith('answers.')) {
       const key = column.key.split('.')[1];
-      return data.answers[key] || '-';
+      return data.answers?.[key] || '-';
     }
-
     return data[column.key as keyof ResponseData] || '-';
   };
 
   return (
-    <tr className="hover:bg-gray-50">
-      {columns.map((column) => (
-        <td 
-          key={column.id}
-          className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
-          style={{ width: column.width ? `${column.width}px` : undefined }}
-        >
-          {getCellContent(column)}
-        </td>
-      ))}
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        <div className="flex items-center space-x-4">
+    <tr className='hover:bg-gray-50'>
+      <td className='px-6 py-2 whitespace-nowrap text-sm text-gray-500'>
+        <div className='flex items-center space-x-4'>
           <button
             onClick={onView}
-            className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-100 transition-colors duration-200"
-          >
-            <Eye className="h-4 w-4 mr-2" />
+            className='inline-flex items-center px-3 py-1  duration-200'>
+            <Eye className='h-4 w-4 mr-2' />
             View
           </button>
         </div>
       </td>
+      {columns.map((column) => (
+        <td
+          key={column.id}
+          className='px-6 py-2 whitespace-nowrap text-xs text-gray-900'
+          style={{ width: column.width ? `${column.width}px` : undefined }}>
+          {getCellContent(column)}
+        </td>
+      ))}
     </tr>
   );
 }
