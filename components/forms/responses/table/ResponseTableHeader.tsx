@@ -44,33 +44,27 @@ export function ResponseTableHeader({ columns, sortConfig, onSort, onColumnResiz
   }, [resizingColumn]);
 
   return (
-    <thead className='bg-gray-50 text-gray-500 text-sm font-medium select-none'>
+    <thead className="bg-gray-50 text-gray-500 text-sm font-medium select-none">
       <tr>
-        {/* Resize Handle */}
-        <div
-          className='absolute right-0 top-0 bottom-0 w-4 cursor-col-resize flex items-center justify-center  opacity-0 group-hover:opacity-100'
-          onMouseDown={(e) =>
-            handleResizeStart(e, column.id, column.width || 100)
-          }>
-          <GripVertical className='h-4 w-4 text-gray-400' />
-        </div>
         {columns.map((column) => (
           <th
             key={column.id}
-            className='relative bg-gray-50 px-6 py-3 text-left'
-            style={{ width: column.width ? `${column.width}px` : undefined }}>
-            <div className='flex items-center group'>
+            className="relative bg-gray-50 px-6 py-3 text-left"
+            style={{ width: column.width ? `${column.width}px` : undefined }}
+          >
+            <div className="flex items-center group">
               {column.sortable ? (
                 <button
                   onClick={() => onSort(column.id)}
-                  className='flex items-center text-xs h  0'>
+                  className="flex items-center text-xs h-10"
+                >
                   {column.label}
-                  <span className='ml-2'>
+                  <span className="ml-2">
                     {sortConfig.columnId === column.id ? (
                       sortConfig.direction === 'asc' ? (
-                        <ChevronUp className='h-4 w-4' />
+                        <ChevronUp className="h-4 w-4" />
                       ) : (
-                        <ChevronDown className='h-4 w-4' />
+                        <ChevronDown className="h-4 w-4" />
                       )
                     ) : null}
                   </span>
@@ -78,10 +72,18 @@ export function ResponseTableHeader({ columns, sortConfig, onSort, onColumnResiz
               ) : (
                 <span>{column.label}</span>
               )}
+              
+              {/* Resize Handle */}
+              <div
+                className="absolute right-0 top-0 bottom-0 w-4 cursor-col-resize flex items-center justify-center opacity-0 group-hover:opacity-100"
+                onMouseDown={(e) => handleResizeStart(e, column.id, column.width || 100)}
+              >
+                <GripVertical className="h-4 w-4 text-gray-400" />
+              </div>
             </div>
           </th>
         ))}
-        <th className='relative bg-gray-50 px-6 py-3 text-left' />
+        <th className="relative bg-gray-50 px-6 py-3 text-left" />
       </tr>
     </thead>
   );

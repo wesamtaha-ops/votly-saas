@@ -3,7 +3,24 @@ import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
 import * as Tabs from '@radix-ui/react-tabs';
-import { BarChart2, Download, Search, Filter, Calendar, TrendingUp, Users, Clock, Target, Brain, ChevronDown, ArrowUpRight, ArrowDownRight, FileText, PieChart, Plus } from 'lucide-react';
+import {
+  BarChart2,
+  Download,
+  Search,
+  Filter,
+  Calendar,
+  TrendingUp,
+  Users,
+  Clock,
+  Target,
+  Brain,
+  ChevronDown,
+  ArrowUpRight,
+  ArrowDownRight,
+  FileText,
+  PieChart,
+  Plus,
+} from 'lucide-react';
 
 import { StatsCards } from './FormResults/StatsCards';
 import { ResponseTable } from '@/components/forms/responses/table/ResponseTable';
@@ -36,9 +53,12 @@ export default function FormResults() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [activeMetricTab, setActiveMetricTab] = useState('overview');
-  const [exportFormat, setExportFormat] = useState<'excel' | 'csv' | 'spss'>('excel');
+  const [exportFormat, setExportFormat] = useState<'excel' | 'csv' | 'spss'>(
+    'excel',
+  );
   const [isPremium] = useState(false);
-  const [selectedResponse, setSelectedResponse] = useState<ResponseDetails | null>(null);
+  const [selectedResponse, setSelectedResponse] =
+    useState<ResponseDetails | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const handleViewDetails = (response: ResponseDetails) => {
@@ -55,7 +75,7 @@ export default function FormResults() {
     switch (tabId) {
       case 'responses':
         return (
-          <ResponseTable 
+          <ResponseTable
             responses={responses}
             onViewDetails={handleViewDetails}
           />
@@ -70,83 +90,48 @@ export default function FormResults() {
         return <DemographicsTab responses={responses} />;
       case 'analytics':
         return (
-          <div className="min-h-screen mb-20 bg-gray-50">
-           <AIAnalysis 
-            responses={responses} 
-            showAIAnalysis={true} 
-            setShowAIAnalysis={() => {}} 
-          />
-          
-          <AdvancedAnalytics 
-            responses={responses} 
-            isPremium={isPremium} 
-          />
+          <div className='min-h-screen mb-20 bg-gray-50'>
+            <AIAnalysis
+              responses={responses}
+              showAIAnalysis={true}
+              setShowAIAnalysis={() => {}}
+            />
+
+            <AdvancedAnalytics responses={responses} isPremium={isPremium} />
           </div>
         );
-     
+
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-screen py-5 bg-gray-50">
+    <div className='min-h-screen py-5 bg-gray-50'>
       {/* Header */}
-      <div className=" rounded-t-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h1 className="text-2xl font-bold  ">Form Results</h1>
-          <p className="mt-2 text-lg text-white/90">
-          </p>
+      <div className=' rounded-t-lg'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+          <h1 className='text-2xl font-bold  '>Form Results</h1>
+          <p className='mt-2 text-lg text-white/90'></p>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8'>
         {/* Stats Overview */}
         <StatsCards responses={responses} />
 
-        {/* Filters */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 my-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search responses..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
-                />
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <select
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
-                className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              >
-                <option value="7d">Last 7 days</option>
-                <option value="30d">Last 30 days</option>
-                <option value="90d">Last 90 days</option>
-                <option value="custom">Custom range</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
         {/* Tabs Navigation and Content */}
-        <Tabs.Root defaultValue="responses" className="space-y-6">
-          <div className="bg-[#8b5cf6] rounded-t-lg">
-            <Tabs.List className="flex space-x-1 px-4">
+        <Tabs.Root defaultValue='responses' className='space-y-6 rounded mt-10'>
+          <div className='bg-[#8b5cf6] rounded-t-lg'>
+            <Tabs.List className='flex space-x-1 px-4'>
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
                   <Tabs.Trigger
                     key={tab.id}
                     value={tab.id}
-                    className="group px-6 py-3 text-sm font-medium text-white/70 hover:text-white border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:text-white focus:outline-none transition-all duration-200 flex items-center space-x-2"
-                  >
-                    <Icon className="h-4 w-4" />
+                    className='group px-6 py-3 text-sm font-medium text-white/70 hover:text-white border-b-2 border-transparent data-[state=active]:border-white data-[state=active]:text-white focus:outline-none transition-all duration-200 flex items-center space-x-2'>
+                    <Icon className='h-4 w-4' />
                     <span>{tab.label}</span>
                   </Tabs.Trigger>
                 );
@@ -155,7 +140,7 @@ export default function FormResults() {
           </div>
 
           {tabs.map((tab) => (
-            <Tabs.Content key={tab.id} value={tab.id} className="outline-none">
+            <Tabs.Content key={tab.id} value={tab.id} className='outline-none'>
               {renderTabContent(tab.id)}
             </Tabs.Content>
           ))}
