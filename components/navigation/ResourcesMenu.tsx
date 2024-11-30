@@ -58,7 +58,7 @@ export function ResourcesMenu() {
         <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">
           FEATURED CONTENT
         </h3>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 ">
           <div className="relative group">
             <div className="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
               <img 
@@ -77,31 +77,7 @@ export function ResourcesMenu() {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <Link to="/resources/guide" className="block group">
-              <div className="flex items-center">
-                <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-gradient-to-br from-blue-50 to-blue-100 group-hover:from-blue-100 group-hover:to-blue-200">
-                  <Download className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-900 group-hover:text-indigo-600">Form Design Guide</p>
-                  <p className="mt-1 text-xs text-gray-500">Download free guide</p>
-                </div>
-              </div>
-            </Link>
-
-            <Link to="/blog/form-analytics" className="block group">
-              <div className="flex items-center">
-                <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-gradient-to-br from-pink-50 to-pink-100 group-hover:from-pink-100 group-hover:to-pink-200">
-                  <Newspaper className="h-5 w-5 text-pink-600" />
-                </div>
-                <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-900 group-hover:text-indigo-600">Form Analytics Guide</p>
-                  <p className="mt-1 text-xs text-gray-500">Latest blog post</p>
-                </div>
-              </div>
-            </Link>
-          </div>
+         
         </div>
       </div>
 

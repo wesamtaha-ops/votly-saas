@@ -22,7 +22,19 @@ import Cookies from '@/components/pages/Cookies';
 import Pricing from '@/components/pages/Pricing';
 import CreateForm from '@/components/pages/CreateForm';
 import AIFormCreator from '@/components/pages/AIFormCreator';
-import FormBuilderProduct from '@/components/products/FormBuilder';
+import FormBuilderProduct from '@/components/pages/products/FormBuilder';
+import SurveyMaker from '@/components/pages/products/SurveyMaker';
+import AIForms from '@/components/pages/products/AIForms';
+import Education from '@/components/pages/industries/Education';
+import Healthcare from '@/components/pages/industries/Healthcare';
+import Retail from '@/components/pages/industries/Retail';
+import HRRecruiting from '@/components/pages/industries/HRRecruiting';
+import Enterprise from '@/components/pages/industries/Enterprise';
+import RealEstate from '@/components/pages/industries/RealEstate';
+import NonProfit from '@/components/pages/industries/NonProfit';
+import Docs from '@/components/pages/docs/index';
+import ReferPage from '@/components/pages/ReferFriend';
+import ForgotPassword from '@/components/pages/ForgotPassword';
 
 function App() {
   return (
@@ -52,6 +64,22 @@ function App() {
               path='products/form-builder'
               element={<FormBuilderProduct />}
             />
+            <Route path='/products/survey-maker' element={<SurveyMaker />} />
+            <Route path='/products/ai-forms' element={<AIForms />} />
+            <Route path='/industries/education' element={<Education />} />
+            <Route path='/industries/healthcare' element={<Healthcare />} />
+            <Route path='/industries/retail' element={<Retail />} />
+            <Route
+              path='/industries/hr---recruiting'
+              element={<HRRecruiting />}
+            />
+            <Route path='/industries/enterprise' element={<Enterprise />} />
+            <Route path='/industries/real-estate' element={<RealEstate />} />
+            <Route path='/industries/non-profit' element={<NonProfit />} />
+            <Route path='/docs' element={<Docs />} />
+            <Route path='/refer' element={<ReferPage />} />
+            <Route path='/forgot-password' element={<ForgotPassword />} />
+            
           </Routes>
         </Layout>
       </AuthProvider>

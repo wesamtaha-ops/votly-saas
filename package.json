@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "ESLINT_DISABLE=true vite build",
     "preview": "vite preview",
+    "deploy": "sudo netlify deploy",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
