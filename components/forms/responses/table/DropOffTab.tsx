@@ -121,33 +121,7 @@ export function DropOffTab({ responses }: DropOffTabProps) {
         </motion.div>
       </div>
 
-      {/* Drop-off Trend Chart */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="bg-white p-6 rounded-lg shadow-sm border border-gray-200"
-      >
-        <h3 className="text-lg font-medium text-gray-900 mb-6">Completion Rate Trend</h3>
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Line 
-                type="monotone" 
-                dataKey="completion" 
-                stroke="#6366F1" 
-                strokeWidth={2}
-                dot={{ fill: '#6366F1' }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </motion.div>
-
+   
       {/* Detailed Drop-off Table */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -216,6 +190,34 @@ export function DropOffTab({ responses }: DropOffTabProps) {
           </table>
         </div>
       </motion.div>
+
+   {/* Drop-off Trend Chart */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="bg-white p-6 rounded-lg shadow-sm border border-gray-200"
+      >
+        <h3 className="text-lg font-medium text-gray-900 mb-6">Completion Rate Trend</h3>
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={trendData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Line 
+                type="monotone" 
+                dataKey="completion" 
+                stroke="#6366F1" 
+                strokeWidth={2}
+                dot={{ fill: '#6366F1' }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </motion.div>
+
 
       {/* Recommendations */}
       <motion.div
