@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { TeamMemberList } from './team/TeamMemberList';
 import { TeamActivityLog } from './team/TeamActivityLog';
 import { RoleManagement } from './team/RoleManagement';
-import { WorkspaceSettings } from './team/WorkspaceSettings';
 import { InviteMemberDialog } from './team/InviteMemberDialog';
 import { Tabs } from './team/Tabs';
 import { Plus } from 'lucide-react';
@@ -17,9 +16,9 @@ export function TeamTab() {
 
   const tabs = [
     { id: 'members', label: 'Team Members' },
-    { id: 'activity', label: 'Activity Log' },
     { id: 'roles', label: 'Roles & Permissions' },
-    { id: 'workspace', label: 'Workspace Settings' },
+    { id: 'activity', label: 'Activity Log' },
+
   ];
 
   const renderTabContent = () => {
