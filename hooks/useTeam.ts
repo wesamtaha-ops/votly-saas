@@ -90,6 +90,12 @@ export function useTeam() {
                 description: 'Can view form analytics',
                 enabled: true,
               },
+              {
+                id: 'manage_payments',
+                name: 'Manage Payments',
+                description: 'Can view paymnets',
+                enabled: true,
+              },
             ],
           },
         ]);

@@ -8,6 +8,7 @@ import { useResponseTableState } from './hooks/useResponseTableState';
 import { useResponseTableSelection } from './hooks/useResponseTableSelection';
 import type { ResponseColumn, ResponseData } from './types';
 import { mockResponses } from './mockData';
+import { DropOffTab } from './DropOffTab';
 import './styles/ResponseTable.css';
 
 interface ResponseTableProps {

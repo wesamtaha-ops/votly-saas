@@ -67,10 +67,10 @@ export function TableToolbar({
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
         </div>
-        <StatusFilter 
+        {/* <StatusFilter 
           selectedStatus={selectedStatus}
           onStatusChange={onStatusChange}
-        />
+        /> */}
       </div>
 
       <div className="flex items-center space-x-2">

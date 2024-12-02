@@ -134,6 +134,23 @@ export function ResponseDetailsSlideOver({ isOpen, onClose, response }: Response
                     </div>
                   </div>
 
+                  {/* Response Data */}
+                  <div className="space-y-8">
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">Answers</h3>
+                      <div className="space-y-4">
+                        {Object.entries(response.answers).map(([question, answer], index) => (
+                          <div key={index} className="bg-gray-50 rounded-lg p-4">
+                            <p className="text-sm font-medium text-gray-700 mb-2">{question}</p>
+                            <p className="text-sm text-gray-900">
+                              {typeof answer === 'object' ? JSON.stringify(answer) : String(answer)}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    
                   {/* Meta Information */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                     <div className="space-y-4">
@@ -192,22 +209,7 @@ export function ResponseDetailsSlideOver({ isOpen, onClose, response }: Response
                     </div>
                   </div>
 
-                  {/* Response Data */}
-                  <div className="space-y-8">
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-4">Answers</h3>
-                      <div className="space-y-4">
-                        {Object.entries(response.answers).map(([question, answer], index) => (
-                          <div key={index} className="bg-gray-50 rounded-lg p-4">
-                            <p className="text-sm font-medium text-gray-700 mb-2">{question}</p>
-                            <p className="text-sm text-gray-900">
-                              {typeof answer === 'object' ? JSON.stringify(answer) : String(answer)}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
+                    
                     <div>
                       <h3 className="text-lg font-medium text-gray-900 mb-4">Response Metadata</h3>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -226,6 +228,9 @@ export function ResponseDetailsSlideOver({ isOpen, onClose, response }: Response
                       </div>
                     </div>
                   </div>
+
+
+                  
                 </Tabs.Content>
 
                 <Tabs.Content value="comments" className="flex-1 p-6">

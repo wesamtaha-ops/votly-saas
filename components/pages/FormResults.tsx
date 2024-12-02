@@ -34,14 +34,16 @@ import { AdvancedAnalytics } from './FormResults/AdvancedAnalytics';
 import { EngagementTab } from './FormResults/EngagementTab';
 import { CompletionTab } from './FormResults/CompletionTab';
 import { DemographicsTab } from './FormResults/DemographicsTab';
+import { DropOffTab } from '@/components/forms/responses/table/DropOffTab';
 import { ResponseDetailsSlideOver } from '@/components/forms/responses/ResponseDetailsSlideOver';
 import type { Response, ResponseDetails } from '@/types';
 
 const tabs = [
-  { id: 'responses', label: 'In Progress', icon: FileText },
+  { id: 'responses', label: 'Results', icon: FileText },
+  { id: 'completion', label: 'In Progress', icon: Target },
+  { id: 'drop-off', label: 'Drop-off', icon: TrendingUp },
   { id: 'summary', label: 'Summary', icon: PieChart },
   { id: 'engagement', label: 'Engagement', icon: Clock },
-  { id: 'completion', label: 'Completion', icon: Target },
   { id: 'demographics', label: 'Demographics', icon: Users },
   { id: 'analytics', label: 'AI Analytics', icon: BarChart2 },
 ];
@@ -86,6 +88,8 @@ export default function FormResults() {
         return <EngagementTab responses={responses} />;
       case 'completion':
         return <CompletionTab responses={responses} />;
+      case 'drop-off':
+        return <DropOffTab responses={responses} />;
       case 'demographics':
         return <DemographicsTab responses={responses} />;
       case 'analytics':
